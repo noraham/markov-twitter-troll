@@ -110,7 +110,7 @@ def make_text(chains):
     # print 'total char count', character_count
     return " ".join(words)
 
-
+# some commands might not apply to twitter app
 input_path = sys.argv[1]
 
 # Open the file and turn it into one long string
