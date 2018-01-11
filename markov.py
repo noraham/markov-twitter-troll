@@ -42,27 +42,23 @@ def make_chains(text_string):
 
     chains = {}
 
-    # convert string to list
-    # make keys = tuples from list = range(len([::2]))
-    # make values =
-
     corpus = text_string.split()
     corpus.append(None)
 
-    size_of_gram = raw_input('Enter a gram size: ')  # think about wording
+    size_of_gram = raw_input('Length of n-gram: ')
     size_of_gram = int(size_of_gram)
 
-    for i in range(len(corpus) - size_of_gram):
+    for i in range(len(corpus) - size_of_gram):  # iterating over list of source string words
         mlist = []
-        for j in range(i, i + size_of_gram):
+        for j in range(i, i + size_of_gram):  # iterating over words in sets of size - size_of_gram
             mlist.append(corpus[j])
-        mtuple = tuple(mlist)
+        dict_key = tuple(mlist)
         
         new_value_var = corpus[i + size_of_gram]
-        if mtuple in chains:
-            chains[mtuple].append(new_value_var)
+        if dict_key in chains:
+            chains[dict_key].append(new_value_var)
         else:
-            chains[mtuple] = [new_value_var]
+            chains[dict_key] = [new_value_var]
     return chains
 
 
@@ -71,35 +67,28 @@ def make_text(chains):
 
     words = []
 
-    # add tuple to list as 2 strings
-    # infinite loop, break if None
-    # random sample a value and append
-    # access key for [1,2], random sample a value and append
-    # end if key is not in dict
-
     keys = chains.keys()  # list of tuples
     n = len(keys[0])
     character_count = 0
 
     while True:
         random_key = choice(keys)  # selects a tuple
-        if random_key[0][0].isupper():
-            
+        if random_key[0][0].isupper():  # random text will start with capital letter
             break
 
     for initial_append in range(n):
-        # print random_key
         words.append(random_key[initial_append])  # append tuple to list as strings
-        # print 'increment count', len(random_key[initial_append])
         character_count += len(random_key[initial_append]) + 1  # the additional 1 is for a space after the word, delete if twitter doesn't count spaces as chars
        
 
     next_value = choice(chains[random_key])  # picks a random sample from the value list in chains dict
+    if chains[random_key] == [None]:  # handles edge case of capital word + end of sentence, early exit condition
+        return " ".join(words)
     words.append(next_value)
 
     counter = 1
     punctuation = [".", "!", "?"]
-    # print chains
+
     while True:
         
         shift_list = []
@@ -109,16 +98,11 @@ def make_text(chains):
 
         if chains[shift_tuple] == [None]:  # early exit condition if we reach end of text
             break
-        if (character_count > 100
-            and (shift_list[n - 1][-1] in punctuation or character_count > 110)):
-            # print "In second check"
+        if (character_count > 115 and
+            (shift_list[n - 1][-1] in punctuation or character_count > 130)):
             break
 
-        #if character_count > 200:
-        #    if shift_list[n - 1][-1] in punctuation or character_count > 260:
-        #        break
-
-        another_next_value = choice(chains[shift_tuple])  # explore use of random.sample later
+        another_next_value = choice(chains[shift_tuple])
         words.append(another_next_value)
         character_count += len(another_next_value) + 1
 
@@ -127,15 +111,15 @@ def make_text(chains):
     return " ".join(words)
 
 
-# input_path = sys.argv[1]
+input_path = sys.argv[1]
 
-# # Open the file and turn it into one long string
-# input_text = open_and_read_file(input_path)
+# Open the file and turn it into one long string
+input_text = open_and_read_file(input_path)
 
-# # Get a Markov chain
-# chains = make_chains(input_text)
+# Get a Markov chain
+chains = make_chains(input_text)
 
-# # Produce random text
-# random_text = make_text(chains)
+# Produce random text
+random_text = make_text(chains)
 
-# print random_text
+print random_text
